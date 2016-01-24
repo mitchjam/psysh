@@ -66,7 +66,7 @@ class ParserFactory
      *
      * @return Parser
      */
-    public function createParser($kind = null)
+    public function createParser($kind = null, Lexer $lexer = null)
     {
         if ($this->hasKindsSupport()) {
             $originalFactory = new OriginalParserFactory();
@@ -77,13 +77,20 @@ class ParserFactory
                 throw new \InvalidArgumentException('Unknown parser kind');
             }
 
-            $parser = $originalFactory->create(constant('PhpParser\ParserFactory::' . $kind));
+            if ($lexer === null) {
+                $php70 = version_compare(PHP_VERSION, '7.0', '>=');
+                if (($kind === 'ONLY_PHP5' && !$php70) || ($kind === 'ONLY_PHP7' && $php70)) {
+                    $lexer = new Lexer();
+                }
+            }
+
+            $parser = $originalFactory->create(constant('PhpParser\ParserFactory::' . $kind), $lexer);
         } else {
             if ($kind !== null) {
                 throw new \InvalidArgumentException('Install PHP Parser v2.x to specify parser kind');
             }
 
-            $parser = new Parser(new Lexer());
+            $parser = new Parser($lexer ?: new Lexer());
         }
 
         return $parser;
