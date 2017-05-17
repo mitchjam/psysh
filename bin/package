@@ -43,10 +43,13 @@ if [ -z "$PKG_VERSION" ]; then
 fi
 
 # Support BSD tar because OS X :(
-TAR_FLAGS='--transform="flags=r;s/.*/psysh/"'
+TAR_FLAGS='--transform "s/.*/psysh/"'
 if [[ $(tar --version) = bsdtar* ]]; then
   TAR_FLAGS='-s /.*/psysh/'
 fi
 
+echo -- tar $TAR_FLAGS -czf dist/psysh-${PKG_VERSION}.tar.gz psysh.phar
 tar $TAR_FLAGS -czf dist/psysh-${PKG_VERSION}.tar.gz psysh.phar
+
+echo -- tar $TAR_FLAGS -czf dist/psysh-${PKG_VERSION}-compat.tar.gz psysh-compat.phar
 tar $TAR_FLAGS -czf dist/psysh-${PKG_VERSION}-compat.tar.gz psysh-compat.phar

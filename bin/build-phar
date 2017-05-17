@@ -1,6 +1,5 @@
-#!/usr/bin/env php -d phar.readonly=Off
+#!/usr/bin/env php
 <?php
-
 /*
  * This file is part of Psy Shell.
  *
@@ -9,6 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+echo "building phar\n";
 
 if (!is_file(dirname(__DIR__) . '/vendor/autoload.php')) {
     throw new RuntimeException('Missing PsySH dev dependencies in ' . dirname(__DIR__) . '/vendor/' . ', install with `composer.phar install --dev`.');
@@ -29,10 +30,16 @@ use Psy\Compiler;
 error_reporting(-1);
 ini_set('display_errors', 1);
 
+echo "creating compiler\n";
+
 $compiler = new Compiler();
+
+echo "compiling\n";
 
 if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--compat') {
     $compiler->compile('psysh-compat.phar');
 } else {
     $compiler->compile();
 }
+
+echo "done\n";
